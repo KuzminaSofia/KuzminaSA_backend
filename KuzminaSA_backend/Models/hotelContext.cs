@@ -18,7 +18,7 @@ namespace KuzminaSA_backend.Models
         }
         */
 
-        public DbSet<guest> guests { get; set; } // здесь вместо book название своего класса
+        public DbSet<guest> guests { get; set; } // 
 
         public DbSet<room> rooms { get; set; } //
     }

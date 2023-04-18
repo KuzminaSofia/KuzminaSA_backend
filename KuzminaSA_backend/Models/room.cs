@@ -4,7 +4,8 @@
     {
         public int Id { get; set; }
         public int number_room { get; set; }
-        public int capacity { get; set; }
+        public int capacity { get; set; } // вместимость
+        public int price { get; set; }
 
     }
 }

@@ -7,5 +7,6 @@
         public string first_name { get; set; }
         public int number_room { get; set; }
         public string phone_namber { get; set; }
+        public string happy_b { get; set; }
     }
 }

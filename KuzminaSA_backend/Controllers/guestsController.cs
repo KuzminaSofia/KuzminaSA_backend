@@ -24,30 +24,30 @@ namespace KuzminaSA_backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<guest>>> Getguests()
         {
-          if (_context.guests == null)
+          if (_context.guest == null)
           {
               return NotFound();
           }
-            return await _context.guests.ToListAsync();
+            return await _context.guest.ToListAsync();
         }
 
-        // GET: api/guests/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<guest>> Getguest(int id)
-        {
-          if (_context.guests == null)
-          {
-              return NotFound();
-          }
-            var guest = await _context.guests.FindAsync(id);
+        //// GET: api/guests/5
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<guest>> Getguest(int id)
+        //{
+        //  if (_context.guest == null)
+        //  {
+        //      return NotFound();
+        //  }
+        //    var guest = await _context.guest.FindAsync(id);
 
-            if (guest == null)
-            {
-                return NotFound();
-            }
+        //    if (guest == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return guest;
-        }
+        //    return guest;
+        //}
 
         // PUT: api/guests/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -85,31 +85,32 @@ namespace KuzminaSA_backend.Controllers
         [HttpPost]
         public async Task<ActionResult<guest>> Postguest(guest guest)
         {
-          if (_context.guests == null)
+          if (_context.guest == null)
           {
               return Problem("Entity set 'hotelContext.guests'  is null.");
           }
-            _context.guests.Add(guest);
+            var guests = new guest(guest.Id, guest.last_name, guest.first_name, guest.happy_b);
+            _context.guest.Add(guests);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Getguest", new { id = guest.Id }, guest);
+            return CreatedAtAction("Getguests", new { id = guest.Id }, guest);
         }
 
         // DELETE: api/guests/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Deleteguest(int id)
         {
-            if (_context.guests == null)
+            if (_context.guest == null)
             {
                 return NotFound();
             }
-            var guest = await _context.guests.FindAsync(id);
-            if (guest == null)
+            var guests = await _context.guest.FindAsync(id);
+            if (guests == null)
             {
                 return NotFound();
             }
 
-            _context.guests.Remove(guest);
+            _context.guest.Remove(guests);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +118,27 @@ namespace KuzminaSA_backend.Controllers
 
         private bool guestExists(int id)
         {
-            return (_context.guests?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.guest?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        // GET: api/Guests/happ_b
+        [HttpGet("{happy_b}")]
+        public async Task<ActionResult<IEnumerable<guest>>> GetGuestsByBirth(string happy_b)
+        {
+            if (_context.guest == null)
+            {
+                return NotFound();
+            }
+            var guests = await _context.guest
+                .Where(a => a.happy_b == happy_b)
+                .ToListAsync();
+
+            if (guests == null)
+            {
+                return NotFound();
+            }
+
+            return guests;
         }
     }
 }

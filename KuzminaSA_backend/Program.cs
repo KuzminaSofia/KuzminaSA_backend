@@ -12,8 +12,9 @@ namespace KuzminaSA_backend
 
             // Add services to the container.
 
-            builder.Services.AddDbContext<hotelContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("hotelContext")));
+            //builder.Services.AddDbContext<hotelContext>(options =>
+            //    options.UseSqlServer(builder.Configuration.GetConnectionString("hotelContext")));
+            builder.Services.AddDbContext<hotelContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("hotelContext")));
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

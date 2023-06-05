@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using KuzminaSA_backend.Models;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace KuzminaSA_backend.Controllers
 {
@@ -24,30 +25,30 @@ namespace KuzminaSA_backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<room>>> Getrooms()
         {
-          if (_context.rooms == null)
+          if (_context.room == null)
           {
               return NotFound();
           }
-            return await _context.rooms.ToListAsync();
+            return await _context.room.ToListAsync();
         }
 
-        // GET: api/rooms/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<room>> Getroom(int id)
-        {
-          if (_context.rooms == null)
-          {
-              return NotFound();
-          }
-            var room = await _context.rooms.FindAsync(id);
+        //// GET: api/rooms/5
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<room>> Getroom(int id)
+        //{
+        //  if (_context.room == null)
+        //  {
+        //      return NotFound();
+        //  }
+        //    var room = await _context.room.FindAsync(id);
 
-            if (room == null)
-            {
-                return NotFound();
-            }
+        //    if (room == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return room;
-        }
+        //    return room;
+        //}
 
         // PUT: api/rooms/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -85,11 +86,12 @@ namespace KuzminaSA_backend.Controllers
         [HttpPost]
         public async Task<ActionResult<room>> Postroom(room room)
         {
-          if (_context.rooms == null)
+          if (_context.room == null)
           {
               return Problem("Entity set 'hotelContext.rooms'  is null.");
           }
-            _context.rooms.Add(room);
+            var rooms = new room(room.Id, room.capacity, room.desc, room.guest, room.price);
+            _context.room.Add(rooms);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("Getroom", new { id = room.Id }, room);
@@ -99,17 +101,17 @@ namespace KuzminaSA_backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Deleteroom(int id)
         {
-            if (_context.rooms == null)
+            if (_context.room == null)
             {
                 return NotFound();
             }
-            var room = await _context.rooms.FindAsync(id);
+            var room = await _context.room.FindAsync(id);
             if (room == null)
             {
                 return NotFound();
             }
 
-            _context.rooms.Remove(room);
+            _context.room.Remove(room);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +119,27 @@ namespace KuzminaSA_backend.Controllers
 
         private bool roomExists(int id)
         {
-            return (_context.rooms?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.room?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        // GET: api/Rooms/Price
+        [HttpGet("{price}")]
+        public async Task<ActionResult<IEnumerable<room>>> GetRoomsByPrice(int price)
+        {
+            if (_context.room == null)
+            {
+                return NotFound();
+            }
+            var room = await _context.room
+                .Where(b => b.price == price)
+                .ToListAsync();
+
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            return room;
         }
     }
 }
